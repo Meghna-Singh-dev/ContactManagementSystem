@@ -4,10 +4,10 @@ namespace ContactManagementSystem
 {
     interface iContactInterface
     {
-        string saveContact(string fName, string lName, string contactNo, string emailID);
-        bool deleteContact(string contactNo);
+        string saveContact(string fName, string lName, int contactNo, string emailID);
+        bool deleteContact(int contactNo);
         bool updateContact(string keyword, string newRec);
-        int searchContact(string fName);
+        int searchContact(string searchKeyword, string searchValue);
 
     }
 }
