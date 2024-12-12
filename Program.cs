@@ -1,5 +1,9 @@
-﻿using System;
+using System;
+using System.Buffers;
 using System.IO;
+using System.Numerics;
+using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ContactManagementSystem
 {
@@ -23,35 +27,49 @@ namespace ContactManagementSystem
                 string? fName = Console.ReadLine();
                 Console.WriteLine("Please enter Last Name : \n");
                 string? lName = Console.ReadLine();
+                int contactNo;
                 Console.WriteLine("Please enter Contact Number : \n");
-                string? contactNo = Console.ReadLine();
+                contactNo = _contactClass.IsValidContactNumber(Console.ReadLine().ToString());
+
                 Console.WriteLine("Please enter Email ID : \n");
-                string? emailID = Console.ReadLine();
+                string? emailID =_contactClass.IsValidEmail(Console.ReadLine().ToString());
 
                 var result = _contactClass.saveContact(fName, lName, contactNo, emailID);
                 Console.WriteLine(result);
             }
             if (commandType == "2")
             {
-                Console.WriteLine("Please enter First Name to search: \n");
-                string? fName = Console.ReadLine();
-                int count = _contactClass.searchContact(fName);
-                if (count > 0)
+                string searchValue = null;
+                string? searchKeyword = null;
+                _contactClass.searchContact(searchKeyword, searchValue);
+
+                Console.WriteLine("\n Please select contact id to be deleted: \n");
+                int deleteContact =Convert.ToInt32(Console.ReadLine());
+                bool res = _contactClass.deleteContact(deleteContact);
+                if (res)
                 {
-                    Console.WriteLine("\nPlease enter contact number from above search result to be deleted: \n");
-                    string? contactNumber = Console.ReadLine();
-                    bool res = _contactClass.deleteContact(contactNumber);
-                    if (res)
-                    {
-                        Console.WriteLine("\n above Contact deleted successfully");
-                    }
+                    Console.WriteLine("\n selected contact has been deleted successfully");
                 }
+
+                //Console.WriteLine("Please enter First Name to search: \n");
+                //string? fName = Console.ReadLine();
+                //int count = 0;// _contactClass.searchContact(fName);
+                //if (count > 0)
+                //{
+                //    Console.WriteLine("\nPlease enter contact number from above search result to be deleted: \n");
+                //    int contactNumber = Convert.ToInt32(Console.ReadLine());
+                //    bool res = _contactClass.deleteContact(contactNumber);
+                //    if (res)
+                //    {
+                //        Console.WriteLine("\n above Contact deleted successfully");
+                //    }
+                //}
             }
             if (commandType == "3")
             {
                 Console.WriteLine("Please enter First Name for which contact needs to be updated: \n");
                 string? fName = Console.ReadLine();
-                int count = _contactClass.searchContact(fName);
+                int count = 0; // _contactClass.searchContact(fName);
                 if (count > 0)
                 {
                     Console.WriteLine("\nPlease enter which value you want to update: 1 - First Name, 2 - Last Name, 3 - Contact Number, 4 - Email ID \n");
@@ -68,9 +86,15 @@ namespace ContactManagementSystem
             }
             if (commandType == "4")
             {
-                Console.WriteLine("Please enter First Name : \n");
-                string? fName = Console.ReadLine();
-                _contactClass.searchContact(fName);
+                string searchValue = null;
+                Console.WriteLine("\nPlease enter search criteria: 1 - First Name, 2 - Last Name, 3 - Contact Number, 4 - Email ID, 5 - All \n");
+                string? searchKeyword = Console.ReadLine();
+                if (searchKeyword != "5")
+                {
+                    Console.WriteLine("\nPlease enter the search criteria value \n");
+                    searchValue = Console.ReadLine();
+                }
+                _contactClass.searchContact(searchKeyword, searchValue);
             }
         }
     }
